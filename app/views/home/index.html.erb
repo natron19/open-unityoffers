@@ -1,0 +1,86 @@
+<div class="text-center py-5">
+  <h1 class="display-5 fw-bold"><%= ENV.fetch("APP_NAME", "UnityOffers Demo") %></h1>
+  <p class="lead text-muted mt-2"><%= ENV.fetch("APP_TAGLINE", "") %></p>
+  <p class="text-muted mx-auto mt-3" style="max-width: 640px;">
+    Asking is harder than offering, so the words people use to ask usually apologise. Write what you could use the
+    way it comes out. The need translator turns it into a plain, confident request for your community board, tells
+    you what it changed, asks for one missing detail, and suggests two or three swap ideas. No money, no prices, and
+    it never decides what is even: you and the other person do.
+  </p>
+  <div class="mt-4 d-flex justify-content-center gap-3">
+    <% if signed_in? %>
+      <%= link_to "Go to my needs", needs_path, class: "btn btn-primary btn-lg" %>
+    <% else %>
+      <%= link_to "Try it free", sign_up_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "Sign in", sign_in_path, class: "btn btn-outline-secondary btn-lg" %>
+    <% end %>
+  </div>
+</div>
+
+<hr class="my-5 opacity-25">
+
+<div class="mx-auto" style="max-width: 860px;">
+  <h2 class="h5 text-muted text-center mb-4">Example &mdash; a fictional neighbour on Thornbury Road</h2>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="text-muted small mb-1">Their words</p>
+      <p class="mb-0 fst-italic">
+        &ldquo;Sorry to ask, I know everyone&rsquo;s busy. My car died last month and I&rsquo;ve got a pile of
+        flattened boxes and an old bookcase that need to go to the recycling centre. I feel bad asking but I
+        can&rsquo;t carry them on the bus.&rdquo;
+      </p>
+    </div>
+  </div>
+
+  <div class="card listing-card mb-3">
+    <div class="card-body">
+      <div class="mb-2">
+        <span class="badge kind-badge">Request</span>
+        <span class="badge request-badge">Rides</span>
+      </div>
+      <h3 class="h5 mb-2">Lift to the recycling centre</h3>
+      <p class="mb-0">
+        I could use a lift to the recycling centre with a pile of flattened boxes and an old bookcase. My car is off
+        the road and they are too bulky for the bus. Any Saturday this month works, and it should take about two hours.
+      </p>
+    </div>
+  </div>
+
+  <div class="alert alert-secondary py-2 small mb-4">
+    <strong>One detail to add:</strong> Which recycling centre is it, so a driver knows how far the trip is?
+  </div>
+
+  <h3 class="h6 mb-2">Swap ideas</h3>
+  <div class="row g-3 small">
+    <div class="col-md-4">
+      <div class="card h-100 swap-card"><div class="card-body">
+        You drive me and the boxes to the recycling centre one Saturday; I hem or mend two things for you.
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 swap-card"><div class="card-body">
+        You give me the lift and a hand with the bookcase; I keep an hour of sewing repairs for you whenever you need it.
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 swap-card"><div class="card-body">
+        You give me a lift one Saturday, and nothing is expected back. That is a normal thing to ask for here.
+      </div></div>
+    </div>
+  </div>
+
+  <p class="text-center text-muted small mt-4">
+    AI-generated. A draft to edit before you post it. The swap ideas are options; the two people decide.
+  </p>
+</div>
+
+<div class="text-center mt-5 pb-4">
+  <% unless signed_in? %>
+    <%= link_to "Write your own request &rarr;".html_safe, sign_up_path, class: "btn btn-primary" %>
+  <% end %>
+  <div class="mt-3 text-muted small">
+    Open source &middot;
+    <a href="https://unityoffers.com" class="text-muted">UnityOffers</a>
+  </div>
+</div>

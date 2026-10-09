@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-between align-items-start mb-3 gap-3">
+  <div>
+    <p class="text-muted small mb-1">Your need, in your words</p>
+    <h1 class="h3 mb-1"><%= @need.summary %></h1>
+    <p class="text-muted small mb-0">
+      <%= link_to "← My needs", needs_path, class: "text-muted" %>
+    </p>
+  </div>
+  <div class="d-flex gap-2 flex-shrink-0">
+    <%= link_to "Edit", edit_need_path(@need), class: "btn btn-outline-secondary btn-sm" %>
+    <%= button_to "Delete", need_path(@need),
+          method: :delete,
+          form: { data: { turbo_confirm: "Delete this need and its drafts?" } },
+          class: "btn btn-outline-danger btn-sm" %>
+  </div>
+</div>
+
+<div class="card mb-4" style="max-width: 820px;">
+  <div class="card-body">
+    <p class="draft-text mb-3"><%= @need.rough_text %></p>
+    <dl class="row mb-0 small">
+      <dt class="col-sm-4 text-muted">Could offer back</dt>
+      <dd class="col-sm-8"><%= @need.could_offer.presence || "Nothing listed" %></dd>
+      <dt class="col-sm-4 text-muted">When</dt>
+      <dd class="col-sm-8"><%= @need.time_window.presence || "Not stated" %></dd>
+      <dt class="col-sm-4 text-muted">Time it might take</dt>
+      <dd class="col-sm-8"><%= @need.hours_label %></dd>
+      <dt class="col-sm-4 text-muted">Board categories</dt>
+      <dd class="col-sm-8 mb-0"><%= @need.category_list.join(", ") %></dd>
+    </dl>
+  </div>
+</div>
+
+<div class="mb-4" style="max-width: 820px;">
+  <%= render "needs/draft_button", need: @need, label: "Write my request", button_class: "btn btn-primary" %>
+  <p class="text-muted small mt-2 mb-0">
+    Turns your words into a plain request for the board, says what it changed, asks for one missing detail if
+    something is missing, and suggests two or three swap ideas. Nothing is posted anywhere. Typically takes
+    5&ndash;15 seconds.
+  </p>
+</div>
+
+<% if @request_drafts.any? %>
+  <h2 class="h6 text-muted mb-2">Earlier drafts</h2>
+  <ul class="list-unstyled small" style="max-width: 820px;">
+    <% @request_drafts.each do |draft| %>
+      <li class="mb-2">
+        <%= link_to need_request_draft_path(@need, draft) do %>
+          <%= draft.generated_at ? "#{time_ago_in_words(draft.generated_at)} ago" : "Unknown time" %>
+        <% end %>
+        &nbsp;
+        <% if draft.completed? %>
+          <span class="badge request-badge"><%= draft.category %></span>
+          <span class="text-muted"><%= draft.title %></span>
+        <% else %>
+          <span class="text-muted fst-italic"><%= draft.failed? ? "could not be used" : "still running" %></span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

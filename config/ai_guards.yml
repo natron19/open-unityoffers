@@ -1,0 +1,20 @@
+# Per-app guardrail configuration, read by AiGuardConfig.
+# See docs/ai-guardrails.md (Layer 5: AiOutputGuard) and docs/ai-evals.md.
+
+# Not crisis-aware, like production's need translator: the board is for practical help (a lift, a tool, an hour), and
+# hard words are ordinary here ("I am drowning in the garden"), so a crisis list would block everyday requests.
+crisis_terms: []
+
+# Output structure rules per AiTemplate name. Templates not listed get the
+# generic output checks only (non-empty, no prompt leak, no profanity, no new PII).
+#   format:        text | json
+#   required_keys: top-level keys the JSON object must contain
+templates:
+  health_ping:
+    format: text
+  # RequestDraftsController#parse_draft! reads these three keys. missing_detail_question is optional here (null or
+  # absent when nothing is missing); the parser checks it, the title length, the category, the swap-term count, and
+  # the board rules (no money, no "fair"/"best", no contact details).
+  unityoffers_request_v1:
+    format: json
+    required_keys: [request, what_changed, swap_terms]

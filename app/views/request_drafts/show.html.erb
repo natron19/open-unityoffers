@@ -1,0 +1,100 @@
+<% draft = @request_draft %>
+<div data-controller="download-markdown"
+     data-download-markdown-content-value="<%= draft.completed? ? draft.to_markdown : '' %>"
+     data-download-markdown-filename-value="<%= draft.markdown_filename %>"
+     style="max-width: 860px;">
+
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+      <p class="text-muted small mb-1">Request draft</p>
+      <h1 class="h3 mb-1"><%= draft.completed? ? draft.title : @need.summary %></h1>
+      <p class="text-muted small mb-0">
+        <%= link_to "← My needs", needs_path, class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        <%= link_to "Your words", need_path(@need), class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        Drafted <%= draft.generated_at ? "#{time_ago_in_words(draft.generated_at)} ago" : "at an unknown time" %>
+      </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-start">
+      <%= link_to "Edit your words", edit_need_path(@need), class: "btn btn-outline-secondary btn-sm" %>
+      <%= render "needs/draft_button", need: @need, label: "Write it again",
+                 button_class: "btn btn-outline-secondary btn-sm" %>
+      <% if draft.completed? %>
+        <button class="btn btn-outline-primary btn-sm" type="button"
+                data-action="click->download-markdown#download">
+          Download .md
+        </button>
+      <% end %>
+      <button class="btn btn-outline-secondary btn-sm" type="button"
+              data-bs-toggle="collapse" data-bs-target="#raw-response"
+              aria-expanded="false" aria-controls="raw-response">
+        Show raw response
+      </button>
+    </div>
+  </div>
+
+  <p class="text-muted small mb-3">
+    <strong>AI-generated.</strong> A draft for you to edit before you post it, and it can be wrong. The swap ideas
+    are options, not a judgement of what is even: you and the other person decide.
+  </p>
+
+  <% if draft.stale? %>
+    <div class="alert alert-warning py-2 small">
+      Your words have changed since this draft. Write it again to see the new version.
+    </div>
+  <% end %>
+
+  <% if draft.failed? %>
+    <%= render "request_drafts/parse_error", need: @need, draft: draft %>
+  <% elsif draft.completed? %>
+    <div class="card listing-card mb-3">
+      <div class="card-body">
+        <div class="mb-2">
+          <span class="badge kind-badge">Request</span>
+          <span class="badge request-badge"><%= draft.category %></span>
+        </div>
+        <h2 class="h4 mb-2"><%= draft.title %></h2>
+        <p class="draft-text mb-0"><%= draft.description %></p>
+      </div>
+    </div>
+
+    <% if draft.missing_detail_question.present? %>
+      <div class="alert alert-secondary py-2 small mb-4">
+        <strong>One detail to add:</strong> <%= draft.missing_detail_question %>
+      </div>
+    <% end %>
+
+    <h2 class="h5 mb-2">What changed from your words</h2>
+    <p class="mb-4"><%= draft.what_changed %></p>
+
+    <h2 class="h5 mb-2">Swap ideas</h2>
+    <p class="text-muted small">Something to send whoever answers, if you want to. Asking for nothing back is fine too.</p>
+    <div class="row g-3 mb-4">
+      <% draft.swap_terms.each_with_index do |term, i| %>
+        <div class="col-md-<%= draft.swap_terms.size == 3 ? 4 : 6 %>">
+          <div class="card h-100 swap-card">
+            <div class="card-body">
+              <p class="mb-3"><span class="text-muted"><%= i + 1 %>.</span> <%= term["one_line"] %></p>
+              <dl class="small mb-0">
+                <dt class="text-muted fw-normal">You give</dt>
+                <dd><%= term["you_give"] %></dd>
+                <dt class="text-muted fw-normal">They give</dt>
+                <dd class="mb-0"><%= term["they_give"] %></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted fst-italic">This draft is still being written&hellip;</p>
+  <% end %>
+
+  <div class="collapse mt-3" id="raw-response">
+    <div class="card card-body">
+      <p class="text-muted small mb-1">Raw response from Gemini:</p>
+      <pre class="small mb-0 text-muted"><%= draft.gemini_raw %></pre>
+    </div>
+  </div>
+</div>

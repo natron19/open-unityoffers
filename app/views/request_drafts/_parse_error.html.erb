@@ -1,0 +1,12 @@
+<div class="alert alert-warning">
+  <strong>The AI&rsquo;s answer could not be used.</strong>
+  <p class="mb-1"><%= draft.failure_reason %>.</p>
+  <p class="mb-2 small">
+    The answer did not match the expected shape or broke one of the board&rsquo;s rules: a title of at most
+    80 characters, a category from your list, two or three swap ideas, and no money, no &ldquo;fair&rdquo; or
+    &ldquo;best&rdquo;, and no email addresses or phone numbers. Write it again, or edit the template in the admin
+    panel to tighten the instructions.
+  </p>
+  <%= render "needs/draft_button", need: need, label: "Retry",
+             button_class: "btn btn-outline-warning btn-sm" %>
+</div>

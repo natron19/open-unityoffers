@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">My needs</h1>
+  <%= link_to "New need", new_need_path, class: "btn btn-primary btn-sm" %>
+</div>
+
+<% if @needs.empty? %>
+  <div class="text-center py-5">
+    <p class="text-muted mb-3">Nothing here yet. What could you use?</p>
+    <%= link_to "Write your first need", new_need_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <div class="row g-3">
+    <% @needs.each do |need| %>
+      <% draft = need.latest_request_draft %>
+      <div class="col-12">
+        <%= link_to need_path(need), class: "text-decoration-none" do %>
+          <div class="card card-hover">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <% if draft&.completed? %>
+                    <h2 class="h5 card-title mb-1 text-body"><%= draft.title %></h2>
+                    <p class="text-muted small mb-0 fst-italic">&ldquo;<%= need.summary %>&rdquo;</p>
+                  <% else %>
+                    <h2 class="h5 card-title mb-1 text-body fst-italic">&ldquo;<%= need.summary %>&rdquo;</h2>
+                  <% end %>
+                </div>
+                <div class="text-end small flex-shrink-0">
+                  <% if draft&.completed? %>
+                    <div class="mb-1"><span class="badge request-badge"><%= draft.category %></span></div>
+                    <div class="text-muted">drafted <%= time_ago_in_words(draft.generated_at) %> ago</div>
+                  <% elsif draft&.failed? %>
+                    <div class="text-muted fst-italic">last draft could not be used</div>
+                  <% else %>
+                    <div class="text-muted fst-italic">no request yet</div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,70 @@
+<div style="max-width: 720px;">
+  <%= form_with model: need,
+        data: { controller: "form-submit", action: "submit->form-submit#disable" } do |f| %>
+
+    <% if need.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% need.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= f.label :rough_text, "What do you need?", class: "form-label" %>
+      <%= f.text_area :rough_text, rows: 5, maxlength: 600,
+            class: "form-control #{'is-invalid' if need.errors[:rough_text].any?}",
+            placeholder: "Say it however it comes out. \"Sorry to ask, but...\" is fine." %>
+      <div class="form-text">Your own words, as rough as you like. Leave out your name, address and phone number.</div>
+      <% if need.errors[:rough_text].any? %>
+        <div class="invalid-feedback"><%= need.errors[:rough_text].first %></div>
+      <% end %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :could_offer, "What could you offer back?", class: "form-label" %>
+      <%= f.text_field :could_offer, maxlength: 300,
+            class: "form-control #{'is-invalid' if need.errors[:could_offer].any?}",
+            placeholder: "Optional: a skill, a tool, an hour of your time" %>
+      <div class="form-text">Optional. Asking for nothing back is fine; the swap ideas will include that.</div>
+      <% if need.errors[:could_offer].any? %>
+        <div class="invalid-feedback"><%= need.errors[:could_offer].first %></div>
+      <% end %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :categories, "Your board's categories", class: "form-label" %>
+      <%= f.text_field :categories,
+            class: "form-control #{'is-invalid' if need.errors[:categories].any?}" %>
+      <div class="form-text">Separated by commas. The request goes in one of these.</div>
+      <% if need.errors[:categories].any? %>
+        <div class="invalid-feedback"><%= need.errors[:categories].first %></div>
+      <% end %>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-sm-8">
+        <%= f.label :time_window, "When", class: "form-label" %>
+        <%= f.text_field :time_window, maxlength: 120,
+              class: "form-control #{'is-invalid' if need.errors[:time_window].any?}",
+              placeholder: "Optional, e.g. a Saturday morning this month" %>
+        <% if need.errors[:time_window].any? %>
+          <div class="invalid-feedback"><%= need.errors[:time_window].first %></div>
+        <% end %>
+      </div>
+      <div class="col-sm-4">
+        <%= f.label :hours, "Rough hours", class: "form-label" %>
+        <%= f.number_field :hours, min: Need::HOURS_RANGE.min, max: Need::HOURS_RANGE.max, step: 1,
+              class: "form-control #{'is-invalid' if need.errors[:hours].any?}",
+              placeholder: "Optional" %>
+        <% if need.errors[:hours].any? %>
+          <div class="invalid-feedback"><%= need.errors[:hours].first %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <%= f.submit class: "btn btn-primary", data: { form_submit_target: "button" } %>
+  <% end %>
+</div>
