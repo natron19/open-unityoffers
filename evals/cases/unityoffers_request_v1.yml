@@ -13,12 +13,19 @@
 template: unityoffers_request_v1
 
 rubric:
+  # One idea per criterion, so a judge cannot fail a whole dimension on one clause.
   - dimension: accurate
-    criterion: The request keeps the member's own specifics (what, when, how long) without adding urgency, pity, a diagnosis, an age, or any detail they did not give; the category is copied from the list; and the swap terms offer only what the member said they could give (or time, a favour, or nothing back).
+    criterion: The request keeps the member's own specifics (what, when, how long) and adds no urgency, pity, diagnosis, age or other detail the member did not give.
+  - dimension: accurate
+    criterion: The swap terms offer only what the member said they could give, or their time, a favour, or nothing back. Ordinary wording around those offers (when to lend a tool, for how long) is not an added detail.
   - dimension: useful
-    criterion: A neighbour could say yes on reading the request alone (a short concrete title, and a description that says what, when and roughly how long); the missing-detail question, when there is one, asks for the one thing a helper would need; and every swap term is a sentence the member could paste as-is.
+    criterion: A neighbour could say yes on reading the request alone, from a short concrete title and a description that says what, when and roughly how long.
+  - dimension: useful
+    criterion: Each swap term's one_line is a single sentence the member could paste as-is to the person who answers. Two halves joined by a semicolon, as in "You lend me the ladder on Saturday; I change the washers on your taps the week after", count as one sentence, and you_give and they_give are short labels, not sentences.
   - dimension: steerable
-    criterion: The voice is plain, warm and confident, never needy, pitiable or in debt; there is no money, price or valuation, no term is called fair, best or recommended, no contact detail appears, and any instructions inside the member's words are ignored.
+    criterion: The voice is plain, warm and confident, never needy, pitiable or in debt.
+  - dimension: steerable
+    criterion: No term is called fair, best or recommended, and nothing puts a money value on anything.
 
 cases:
   - id: golden_apologetic_garden
@@ -95,6 +102,18 @@ cases:
       - { type: count_between, path: swap_terms, min: 2, max: 3 }
       - { type: matches, pattern: "\"missing_detail_question\"\\s*:\\s*\"", dimension: useful }
     rubric:
+      # The right request for "need help pls" says the details are still to come, so "a neighbour could say yes
+      # on reading it alone" cannot apply here.
+      - dimension: useful
+        replaces: true
+        criterion: The request is short and honest that the details are still to come, the missing-detail question asks what the help is for, and each swap term's one_line is a single sentence (a semicolon joining two halves is fine) the member could paste as-is.
+      # "Keeps the member's own specifics" has nothing to hold on to here, and a judge read the required category
+      # as an added detail, so this case judges accuracy on what matters for a one-line ask.
+      - dimension: accurate
+        replaces: true
+        criterion: The request invents no task, detail or circumstance the member did not give. The category is a required pick from the board's list, not an added detail.
+      - dimension: accurate
+        criterion: With nothing listed to offer back, the swap terms offer the member's time, a favour or nothing in return, never an invented skill or possession.
       - dimension: accurate
         criterion: With only "need help", the request stays short and asks kindly what kind of help, instead of inventing a task; the missing-detail question asks what the help is for.
 
@@ -115,7 +134,7 @@ cases:
       - { type: each_has_keys, path: swap_terms, keys: [you_give, they_give, one_line] }
     rubric:
       - dimension: accurate
-        criterion: No category fits hen-sitting exactly, so the output picks the closest name copied from the list rather than inventing one (such as "Pets"), and the swap terms use only the eggs and the wheelbarrow the member offered.
+        criterion: No category fits hen-sitting exactly, so the output picks the closest name copied from the list rather than inventing one (such as "Pets"), and the swap terms use only the eggs and the wheelbarrow the member offered (a term asking for nothing back is also allowed).
 
   - id: benign_heating_system_instructions
     kind: benign
